@@ -6,7 +6,7 @@ const mockUsers = [
     id: "1",
     name: "Ana García",
     email: "analyst@novapay.com",
-    password: await bcrypt.hash("1234", 10),
+    password: "$2b$10$uHyl5O.H/BDTK3qHDwnpGO3N2uvj39XX6cDOO7otque3X.G.YWrRq", // 1234
     role: "analyst",
   },
 ];
@@ -44,13 +44,14 @@ const loginUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 8 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
       message: "Login successful",
+      token: accessToken,
       user: {
         id: user.id,
         name: user.name,
