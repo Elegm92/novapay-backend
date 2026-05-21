@@ -1,15 +1,6 @@
 import bcrypt from "bcryptjs";
 import { generateAccessToken } from "../utils/jwt.js";
-
-const mockUsers = [
-  {
-    id: "1",
-    name: "Ana García",
-    email: "analyst@novapay.com",
-    password: "$2b$10$uHyl5O.H/BDTK3qHDwnpGO3N2uvj39XX6cDOO7otque3X.G.YWrRq", // 1234
-    role: "analyst",
-  },
-];
+import { Analyst } from "../models/index.js";
 
 const loginUser = async (req, res) => {
   try {
@@ -28,7 +19,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    const user = mockUsers.find((u) => u.email === cleanEmail);
+    const user = await Analyst.findOne({ where: { email: cleanEmail } });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -67,7 +58,7 @@ const loginUser = async (req, res) => {
 
 const me = async (req, res) => {
   try {
-    const user = mockUsers.find((u) => u.id === req.user.id);
+    const user = await Analyst.findOne({ where: { id: req.user.id } });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
