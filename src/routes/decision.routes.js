@@ -1,4 +1,4 @@
-const express = require("express");
+import express from"express";
 const router = express.Router();
 
 const mockDecisions = [];
@@ -35,4 +35,4 @@ router.get("/", (req, res) => {
   res.json(mockDecisions);
 });
 
-module.exports = router;
+export default router;
