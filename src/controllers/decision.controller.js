@@ -1,6 +1,5 @@
-import { sendFeedback } from '../services/fraud.service.js'
-
-const mockDecisions = []
+import { AnalystDecision } from "../models/index.js";
+import { sendFeedback } from "../services/fraud.service.js";
 
 const createDecision = async (req, res) => {
   try {
@@ -14,19 +13,19 @@ const createDecision = async (req, res) => {
       return res.status(400).json({ message: 'Verdict must be fraud or legitimate' })
     }
 
-    const decision = {
-      id: `dec_${Date.now()}`,
+    const decision = await AnalystDecision.create({
       transaction_id,
       verdict,
       notes: notes || null,
       analyst_id: req.user.id,
-      timestamp: new Date().toISOString()
-    }
+    });
 
-    mockDecisions.push(decision)
-
-    // cuando DS tenga API: enviar feedback al modelo
-    // await sendFeedback({ transaction_id, verdict, analyst_id: req.user.id })
+    await sendFeedback({
+      transaction_id,
+      analyst_decision: verdict,
+      analyst_notes: notes || null,
+      analyst_id: req.user.id,
+    });
 
     res.status(201).json(decision)
 
@@ -38,10 +37,11 @@ const createDecision = async (req, res) => {
 
 const getDecisions = async (req, res) => {
   try {
-    res.json(mockDecisions)
+    const decisions = await AnalystDecision.findAll();
+    res.json(decisions);
   } catch (error) {
-    console.error('getDecisions error:', error.message)
-    res.status(500).json({ message: 'Failed to get decisions' })
+    console.error("getDecisions error:", error.message);
+    res.status(500).json({ message: "Failed to get decisions" });
   }
 }
 

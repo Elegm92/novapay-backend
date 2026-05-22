@@ -1,11 +1,13 @@
 import dsApi from '../utils/dsApi.js'
 
 // Cola de casos pendientes
-const getFraudQueue = async (round) => {
-  const params = round ? { round } : {}
-  const response = await dsApi.get('/fraud/queue', { params })
-  return response.data
-}
+const getFraudQueue = async ({ limit, risk_level } = {}) => {
+  const params =  {};
+  if (limit) params.limit = limit;
+  if (risk_level) params.risk_level = risk_level;
+  const response = await dsApi.get("/fraud/queue", { params });
+  return response.data;
+};
 
 // Detalle de un caso específico
 const getTransactionDetail = async (transactionId) => {
