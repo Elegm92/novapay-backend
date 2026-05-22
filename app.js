@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB, sequelize} from './src/config/database.js'
+import seedAnalyst from './src/seeders/analyst.seeder.js'
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.js";
 import transactionRoutes from "./src/routes/transaction.routes.js";
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 const start = async () => {
   await connectDB();
   await sequelize.sync({ alter: true });
+  await seedAnalyst();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
