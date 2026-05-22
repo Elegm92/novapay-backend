@@ -27,8 +27,6 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/decisions", decisionRoutes);
 app.use("/api/stats", statsRoutes);
 
-// connectDB()
-
 app.get("/", (req, res) => {
   res.json({ message: "NovaPay API running" });
 });
