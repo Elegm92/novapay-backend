@@ -8,6 +8,10 @@ const Transaction = sequelize.define(
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    step: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -48,11 +52,13 @@ const Transaction = sequelize.define(
     },
     ip_country: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: 'unknown',
     },
     merchant_category: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: 'unknown',
     },
     fraud_probability: {
       type: DataTypes.FLOAT,

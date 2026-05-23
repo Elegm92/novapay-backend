@@ -22,10 +22,10 @@ const decideTransaction = async (transactionData) => {
 }
 
 // Explicabilidad de una decisión
-const explainDecision = async (transactionData) => {
-  const response = await dsApi.post('/fraud/decide/explain', transactionData)
-  return response.data
-}
+// const explainDecision = async (transactionData) => {
+//   const response = await dsApi.post('/fraud/decide/explain', transactionData)
+//   return response.data
+// }
 
 // Simulador de umbral what-if
 const previewThreshold = async (data) => {
@@ -67,11 +67,9 @@ export {
   getFraudQueue,
   getTransactionDetail,
   decideTransaction,
-  explainDecision,
   previewThreshold,
   getChallengeRecommendation,
   sendFeedback,
   getStats,
-  getAttackStats,
   getFeedbackHistory
 }
