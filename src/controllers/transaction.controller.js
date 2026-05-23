@@ -10,9 +10,9 @@ const getQueue = async (req, res) => {
     const data = await getFraudQueue({ limit, risk_level });
 
     // Persistir cada transacción en Supabase
-    if (data?.items && Array.isArray(data.items)) {
+    if (data?.queue && Array.isArray(data.queue)) {
       await Promise.all(
-        data.items.map(async (tx) => {
+        data.queue.map(async (tx) => {
           await Transaction.findOrCreate({
             where: { transaction_id: tx.transaction_id },
             defaults: {
