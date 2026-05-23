@@ -22,10 +22,10 @@ const decideTransaction = async (transactionData) => {
 }
 
 // Explicabilidad de una decisión
-const explainDecision = async (transactionData) => {
-  const response = await dsApi.post('/fraud/decide/explain', transactionData)
-  return response.data
-}
+// const explainDecision = async (transactionData) => {
+//   const response = await dsApi.post('/fraud/decide/explain', transactionData)
+//   return response.data
+// }
 
 // Simulador de umbral what-if
 const previewThreshold = async (data) => {
@@ -47,15 +47,15 @@ const sendFeedback = async (feedbackData) => {
 
 // Stats globales por ronda
 const getStats = async () => {
-  const response = await dsApi.get('/fraud/stats')
+  const response = await dsApi.get('/data/stats')
   return response.data
 }
 
 // Breakdown de tipos de ataque por ronda
-const getAttackStats = async () => {
-  const response = await dsApi.get('/fraud/stats/attacks')
-  return response.data
-}
+// const getAttackStats = async () => {
+//   const response = await dsApi.get('/fraud/stats/attacks')
+//   return response.data
+// }
 
 // Historial de decisiones
 const getFeedbackHistory = async () => {
@@ -67,11 +67,9 @@ export {
   getFraudQueue,
   getTransactionDetail,
   decideTransaction,
-  explainDecision,
   previewThreshold,
   getChallengeRecommendation,
   sendFeedback,
   getStats,
-  getAttackStats,
   getFeedbackHistory
 }
