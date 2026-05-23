@@ -47,15 +47,15 @@ const sendFeedback = async (feedbackData) => {
 
 // Stats globales por ronda
 const getStats = async () => {
-  const response = await dsApi.get('/fraud/stats')
+  const response = await dsApi.get('/data/stats')
   return response.data
 }
 
 // Breakdown de tipos de ataque por ronda
-const getAttackStats = async () => {
-  const response = await dsApi.get('/fraud/stats/attacks')
-  return response.data
-}
+// const getAttackStats = async () => {
+//   const response = await dsApi.get('/fraud/stats/attacks')
+//   return response.data
+// }
 
 // Historial de decisiones
 const getFeedbackHistory = async () => {
