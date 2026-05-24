@@ -5,8 +5,8 @@ import Transaction from "../models/transaction.model.js";
 
 const getQueue = async (req, res) => {
   try {
-    const { limit, risk_level } = req.query;
-    const data = await getFraudQueue({ limit, risk_level });
+    const { limit, offset, type, risk_level } = req.query;
+    const data = await getFraudQueue({ limit, offset, type, risk_level });
 
     // Persistir cada transacción en Supabase
     if (data?.queue && Array.isArray(data.queue)) {

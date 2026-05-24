@@ -1,28 +1,19 @@
-import { ClientProfile, Transaction } from "../models/index.js";
+import { getClientProfileDS } from "../services/fraud.service.js";
 
 const getClientProfile = async (req, res) => {
   try {
     const { nameOrig } = req.params;
+    const data = await getClientProfileDS(nameOrig);
 
-    const client = await ClientProfile.findOne({
-      where: { client_id: nameOrig },
-      include: [
-        {
-          model: Transaction,
-          as: "Transactions",
-          separate: true,
-          order: [["timestamp", "DESC"]],
-          limit: 10,
-        },
-      ],
-    });
-
-    if (!client) {
+    if (!data) {
       return res.status(404).json({ message: "Client not found" });
     }
 
-    res.json(client);
+    res.json(data);
   } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({ message: "Client not found" });
+    }
     console.error("getClientProfile error:", error.message);
     res.status(500).json({ message: "Failed to get client profile" });
   }
