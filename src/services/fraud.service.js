@@ -9,11 +9,11 @@ const getFraudQueue = async ({ limit, risk_level } = {}) => {
   return response.data;
 };
 
-// Detalle de un caso específico
-const getTransactionDetail = async (transactionId) => {
-  const response = await dsApi.get(`/fraud/queue/${transactionId}`)
-  return response.data
-}
+// // Detalle de un caso específico
+// const getTransactionDetail = async (transactionId) => {
+//   const response = await dsApi.get(`/fraud/queue/${transactionId}`)
+//   return response.data
+// }
 
 // Decisión del modelo sobre una transacción
 const decideTransaction = async (transactionData) => {
@@ -65,7 +65,6 @@ const getFeedbackHistory = async () => {
 
 export {
   getFraudQueue,
-  getTransactionDetail,
   decideTransaction,
   previewThreshold,
   getChallengeRecommendation,

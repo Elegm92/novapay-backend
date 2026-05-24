@@ -7,18 +7,23 @@ import ClientProfile from "./clientProfile.model.js";
 Analyst.hasMany(AnalystDecision, { foreignKey: "analyst_id" });
 AnalystDecision.belongsTo(Analyst, { foreignKey: "analyst_id" });
 
-// Analyst → Transaction
-Analyst.hasMany(Transaction, { foreignKey: "analyst_id" });
-Transaction.belongsTo(Analyst, { foreignKey: "analyst_id" });
+// AnalystDecision → Transaction (para el historial)
+AnalystDecision.belongsTo(Transaction, {
+  foreignKey: "transaction_id",
+  targetKey: "transaction_id",
+  as: "Transaction",
+});
 
 // ClientProfile → Transaction
 ClientProfile.hasMany(Transaction, {
   foreignKey: "nameOrig",
   sourceKey: "client_id",
+  as: "Transactions",
 });
 Transaction.belongsTo(ClientProfile, {
   foreignKey: "nameOrig",
   targetKey: "client_id",
+  as: "ClientProfile",
 });
 
 export { Analyst, AnalystDecision, Transaction, ClientProfile };

@@ -11,6 +11,7 @@ import transactionRoutes from "./src/routes/transaction.routes.js";
 import decisionRoutes from "./src/routes/decision.routes.js";
 import statsRoutes from "./src/routes/stats.routes.js";
 import clientRoutes from "./src/routes/client.routes.js";
+import fraudRoutes from "./src/routes/fraud.routes.js";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/decisions", decisionRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/clients", clientRoutes);
+app.use("/api/fraud", fraudRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "NovaPay API running" });
