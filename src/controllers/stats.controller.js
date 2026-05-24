@@ -1,4 +1,4 @@
-import { Transaction } from "../models/index.js";
+import { Transaction, AnalystDecision } from "../models/index.js";
 import { getStats } from "../services/fraud.service.js";
 import { Op } from "sequelize";
 
@@ -51,4 +51,50 @@ const getDSStats = async (req, res) => {
   }
 };
 
-export { getDashboardStats, getDSStats };
+const getHistoryStats = async (req, res) => {
+  try {
+    const totalApproved = await AnalystDecision.count({
+      where: { verdict: "legitimate" },
+    });
+
+    const totalBlocked = await AnalystDecision.count({
+      where: { verdict: "fraud" },
+    });
+
+    const manualFlags = await AnalystDecision.count();
+
+    // Avg resolve time: minutos entre transaction.timestamp y decision.createdAt
+    const decisions = await AnalystDecision.findAll({
+      include: [
+        {
+          model: Transaction,
+          as: "Transaction",
+          attributes: ["timestamp"],
+          required: true,
+        },
+      ],
+      attributes: ["createdAt"],
+    });
+
+    let avgResolveTime = null;
+    if (decisions.length) {
+      const totalMinutes = decisions.reduce((acc, d) => {
+        const diff = new Date(d.createdAt) - new Date(d.Transaction.timestamp);
+        return acc + diff / 1000 / 60;
+      }, 0);
+      avgResolveTime = Math.round(totalMinutes / decisions.length);
+    }
+
+    res.json({
+      total_approved: totalApproved,
+      total_blocked: totalBlocked,
+      manual_flags: manualFlags,
+      avg_resolve_time_minutes: avgResolveTime,
+    });
+  } catch (error) {
+    console.error("getHistoryStats error:", error.message);
+    res.status(500).json({ message: "Failed to get history stats" });
+  }
+};
+
+export { getDashboardStats, getDSStats, getHistoryStats };
