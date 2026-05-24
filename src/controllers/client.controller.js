@@ -10,6 +10,7 @@ const getClientProfile = async (req, res) => {
         {
           model: Transaction,
           as: "Transactions",
+          separate: true,
           order: [["timestamp", "DESC"]],
           limit: 10,
         },

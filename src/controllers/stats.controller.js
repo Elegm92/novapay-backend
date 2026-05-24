@@ -1,4 +1,5 @@
 import { Transaction } from "../models/index.js";
+import { getStats } from "../services/fraud.service.js";
 import { Op } from "sequelize";
 
 const getDashboardStats = async (req, res) => {
@@ -44,4 +45,14 @@ const getDashboardStats = async (req, res) => {
   }
 };
 
-export { getDashboardStats };
+const getDSStats = async (req, res) => {
+  try {
+    const data = await getStats();
+    res.json(data);
+  } catch (error) {
+    console.error("getDSStats error:", error.message);
+    res.status(500).json({ message: "Failed to get DS stats" });
+  }
+};
+
+export { getDashboardStats, getDSStats };
