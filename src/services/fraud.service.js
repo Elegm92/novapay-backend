@@ -1,9 +1,11 @@
 import dsApi from '../utils/dsApi.js'
 
 // Cola de casos pendientes
-const getFraudQueue = async ({ limit, risk_level } = {}) => {
+const getFraudQueue = async ({ limit,offset, type, risk_level } = {}) => {
   const params =  {};
   if (limit) params.limit = limit;
+  if (offset) params.offset = offset;
+  if (type) params.type = type;
   if (risk_level) params.risk_level = risk_level;
   const response = await dsApi.get("/fraud/queue", { params });
   return response.data;
@@ -63,6 +65,11 @@ const getFeedbackHistory = async () => {
   return response.data
 }
 
+const getClientProfileDS = async (nameOrig) => {
+  const response = await dsApi.get(`/fraud/client/${nameOrig}`);
+  return response.data;
+};
+
 export {
   getFraudQueue,
   decideTransaction,
@@ -70,5 +77,6 @@ export {
   getChallengeRecommendation,
   sendFeedback,
   getStats,
-  getFeedbackHistory
-}
+  getFeedbackHistory,
+  getClientProfileDS
+};

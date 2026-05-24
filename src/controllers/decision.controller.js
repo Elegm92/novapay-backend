@@ -18,6 +18,11 @@ const createDecision = async (req, res) => {
         .json({ message: "Verdict must be fraud or legitimate" });
     }
 
+    const analystIdRegex = /^[a-zA-Z0-9_-]{3,64}$/;
+    if (!analystIdRegex.test(req.user.id)) {
+      return res.status(400).json({ message: "Invalid analyst_id format" });
+    }
+    
     const decision = await AnalystDecision.create({
       transaction_id,
       verdict,

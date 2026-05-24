@@ -23,13 +23,9 @@ const getDashboardStats = async (req, res) => {
       where: { decision: 'block' }
     });
 
-    const fraudCaught = await Transaction.count({
-      where: { decision: 'block' }
-    });
-
     const detectionRate = totalTransactions > 0
-      ? ((fraudCaught / totalTransactions) * 100).toFixed(1)
-      : 0
+        ? ((blockedTransactions / totalTransactions) * 100).toFixed(1)
+        : 0;
 
     res.json({
       total_transactions: totalTransactions,
