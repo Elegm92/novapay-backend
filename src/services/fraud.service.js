@@ -31,7 +31,7 @@ const decideTransaction = async (transactionData) => {
 
 // Simulador de umbral what-if
 const previewThreshold = async (data) => {
-  const response = await dsApi.post('/fraud/decide/preview', data)
+  const response = await dsApi.post('/fraud/preview', data)
   return response.data
 }
 
