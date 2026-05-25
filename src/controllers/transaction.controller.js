@@ -1,7 +1,6 @@
-import {
-  getFraudQueue,
-} from "../services/fraud.service.js";
+import { getFraudQueue } from "../services/fraud.service.js";
 import Transaction from "../models/transaction.model.js";
+import { Op } from "sequelize";
 
 const getQueue = async (req, res) => {
   try {
@@ -9,10 +8,10 @@ const getQueue = async (req, res) => {
     const data = await getFraudQueue({ limit, offset, type, risk_level });
 
     // Persistir cada transacción en Supabase
-    if (data?.queue && Array.isArray(data.queue)) {
-      await Promise.all(
+    if (data?.queue && data.queue.length > 0) {
+      const enrichedQueue = await Promise.all(
         data.queue.map(async (tx) => {
-          await Transaction.findOrCreate({
+          const [dbTx] = await Transaction.findOrCreate({
             where: { transaction_id: tx.transaction_id },
             defaults: {
               step: tx.step,
@@ -33,11 +32,29 @@ const getQueue = async (req, res) => {
               timestamp: tx.timestamp,
             },
           });
+          return { ...tx, ...dbTx.toJSON() };
         }),
       );
+      return res.json({ ...data, queue: enrichedQueue });
     }
+    // DS vacío — fallback a nuestra BD
+    const where = { status: "pending", decision: "review" };
+    if (type) where.type = { [Op.in]: type.split(",") };
+    if (risk_level) where.risk_level = risk_level;
 
-    res.json(data);
+    const localTransactions = await Transaction.findAll({
+      where,
+      order: [["timestamp", "DESC"]],
+      limit: limit ? parseInt(limit) : 50,
+      offset: offset ? parseInt(offset) : 0,
+    });
+
+    const total = await Transaction.count({ where });
+
+    res.json({
+      total_pending: total,
+      queue: localTransactions.map((tx) => tx.toJSON()),
+    });
   } catch (error) {
     console.error("getQueue error:", error.message);
     res.status(500).json({ message: "Failed to get fraud queue" });
