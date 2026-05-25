@@ -7,9 +7,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
     const cleanEmail = email.trim().toLowerCase();
@@ -48,6 +46,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar_style: user.avatar_style,
       },
     });
   } catch (error) {
@@ -70,6 +69,7 @@ const me = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar_style: user.avatar_style,
       },
     });
   } catch (error) {
@@ -78,9 +78,40 @@ const me = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { avatar_style } = req.body;
+
+    const validStyles = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
+    if (!validStyles.includes(avatar_style)) {
+      return res.status(400).json({ message: "Invalid avatar style" });
+    }
+
+    await Analyst.update(
+      { avatar_style },
+      { where: { id: req.user.id } }
+    );
+
+    const user = await Analyst.findOne({ where: { id: req.user.id } });
+
+    res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar_style: user.avatar_style,
+      },
+    });
+  } catch (error) {
+    console.error("updateProfile error:", error.message);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
 const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
   res.json({ message: "Logged out successfully" });
 };
 
-export { loginUser, me, logoutUser };
+export { loginUser, me, logoutUser, updateProfile };

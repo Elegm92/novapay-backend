@@ -29,6 +29,10 @@ const Analyst = sequelize.define(
       type: DataTypes.ENUM("analyst", "admin"),
       defaultValue: "analyst",
     },
+    avatar_style: {
+      type: DataTypes.ENUM("identicon", "monsterid", "wavatar", "retro", "robohash"),
+      defaultValue: "robohash",
+    },
   }
 );
 
