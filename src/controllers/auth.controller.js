@@ -7,7 +7,9 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     const cleanEmail = email.trim().toLowerCase();
@@ -82,15 +84,25 @@ const updateProfile = async (req, res) => {
   try {
     const { avatar_style } = req.body;
 
-    const validStyles = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
+    const validStyles = [
+      "bottts",
+      "adventurer",
+      "avataaars",
+      "croodles",
+      "fun-emoji",
+      "lorelei",
+      "micah",
+      "identicon",
+      "monsterid",
+      "wavatar",
+      "retro",
+      "robohash",
+    ];
     if (!validStyles.includes(avatar_style)) {
       return res.status(400).json({ message: "Invalid avatar style" });
     }
 
-    await Analyst.update(
-      { avatar_style },
-      { where: { id: req.user.id } }
-    );
+    await Analyst.update({ avatar_style }, { where: { id: req.user.id } });
 
     const user = await Analyst.findOne({ where: { id: req.user.id } });
 
