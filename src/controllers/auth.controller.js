@@ -88,15 +88,13 @@ const updateProfile = async (req, res) => {
       "bottts",
       "adventurer",
       "avataaars",
-      "croodles",
-      "fun-emoji",
+      "personas",
+      "notionists",
+      "open-peeps",
+      "pixel-art",
+      "shapes",
       "lorelei",
       "micah",
-      "identicon",
-      "monsterid",
-      "wavatar",
-      "retro",
-      "robohash",
     ];
     if (!validStyles.includes(avatar_style)) {
       return res.status(400).json({ message: "Invalid avatar style" });
