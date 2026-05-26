@@ -7,9 +7,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
     const cleanEmail = email.trim().toLowerCase();
@@ -35,8 +33,8 @@ const loginUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 8 * 60 * 60 * 1000,
     });
 
@@ -85,23 +83,15 @@ const updateProfile = async (req, res) => {
     const { avatar_style } = req.body;
 
     const validStyles = [
-      "bottts",
-      "adventurer",
-      "avataaars",
-      "personas",
-      "notionists",
-      "open-peeps",
-      "pixel-art",
-      "shapes",
-      "lorelei",
-      "micah",
+      "bottts", "adventurer", "avataaars", "personas",
+      "notionists", "open-peeps", "pixel-art", "shapes", "lorelei", "micah",
     ];
+
     if (!validStyles.includes(avatar_style)) {
       return res.status(400).json({ message: "Invalid avatar style" });
     }
 
     await Analyst.update({ avatar_style }, { where: { id: req.user.id } });
-
     const user = await Analyst.findOne({ where: { id: req.user.id } });
 
     res.json({
