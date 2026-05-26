@@ -3,7 +3,8 @@ import { getClientProfileDS } from "../services/fraud.service.js";
 const getClientProfile = async (req, res) => {
   try {
     const { nameOrig } = req.params;
-    const data = await getClientProfileDS(nameOrig);
+    const { limit = 20, offset = 0 } = req.query;
+    const data = await getClientProfileDS(nameOrig, limit, offset);
 
     if (!data) {
       return res.status(404).json({ message: "Client not found" });
