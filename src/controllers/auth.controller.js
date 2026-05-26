@@ -110,8 +110,15 @@ const updateProfile = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  res.clearCookie("accessToken");
-  res.json({ message: "Logged out successfully" });
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  return res.json({
+    message: "Logged out successfully",
+  });
 };
 
 export { loginUser, me, logoutUser, updateProfile };
