@@ -14,16 +14,16 @@ AnalystDecision.belongsTo(Transaction, {
   as: "Transaction",
 });
 
-// ClientProfile → Transaction
-ClientProfile.hasMany(Transaction, {
-  foreignKey: "nameOrig",
-  sourceKey: "client_id",
-  as: "Transactions",
-});
-Transaction.belongsTo(ClientProfile, {
-  foreignKey: "nameOrig",
-  targetKey: "client_id",
-  as: "ClientProfile",
-});
+// ClientProfile → Transaction (comentado — DS provee el perfil del cliente)
+// ClientProfile.hasMany(Transaction, {
+//   foreignKey: "nameOrig",
+//   sourceKey: "client_id",
+//   as: "Transactions",
+// });
+// Transaction.belongsTo(ClientProfile, {
+//   foreignKey: "nameOrig",
+//   targetKey: "client_id",
+//   as: "ClientProfile",
+// });
 
 export { Analyst, AnalystDecision, Transaction, ClientProfile };

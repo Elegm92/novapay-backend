@@ -22,7 +22,7 @@ const createDecision = async (req, res) => {
     if (!analystIdRegex.test(req.user.id)) {
       return res.status(400).json({ message: "Invalid analyst_id format" });
     }
-    
+
     const decision = await AnalystDecision.create({
       transaction_id,
       verdict,
@@ -36,12 +36,16 @@ const createDecision = async (req, res) => {
       { where: { transaction_id } },
     );
 
-    await sendFeedback({
-      transaction_id,
-      analyst_decision: verdict,
-      analyst_notes: notes || null,
-      analyst_id: req.user.id,
-    });
+    try {
+      await sendFeedback({
+        transaction_id,
+        analyst_decision: verdict,
+        analyst_notes: notes || null,
+        analyst_id: req.user.id,
+      });
+    } catch (feedbackError) {
+      console.error("sendFeedback error:", feedbackError.message);
+    }
 
     res.status(201).json(decision);
   } catch (error) {
@@ -59,7 +63,7 @@ const getDecisions = async (req, res) => {
     if (dateFrom || dateTo) {
       where.createdAt = {};
       if (dateFrom) where.createdAt[Op.gte] = new Date(dateFrom); // gte = greater than or equal = >=
-      if (dateTo) where.createdAt[Op.lte] = new Date(dateTo + "T23:59:59");   // lte = less than or equal = <=
+      if (dateTo) where.createdAt[Op.lte] = new Date(dateTo + "T23:59:59"); // lte = less than or equal = <=
     }
 
     const decisions = await AnalystDecision.findAll({
