@@ -65,8 +65,10 @@ const getFeedbackHistory = async () => {
   return response.data
 }
 
-const getClientProfileDS = async (nameOrig) => {
-  const response = await dsApi.get(`/fraud/client/${nameOrig}`);
+const getClientProfileDS = async (nameOrig, limit = 20, offset = 0) => {
+  const response = await dsApi.get(`/fraud/client/${nameOrig}`, {
+    params: { limit, offset },
+  });
   return response.data;
 };
 
