@@ -3,8 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import { connectDB, sequelize} from './src/config/database.js'
-import seedAnalyst from './src/seeders/analyst.seeder.js'
+import { connectDB, sequelize } from "./src/config/database.js";
+import seedAnalyst from "./src/seeders/analyst.seeder.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.js";
 import transactionRoutes from "./src/routes/transaction.routes.js";
@@ -18,6 +18,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set("trust proxy", 1);
+
 app.use(helmet());
 
 app.use(
@@ -29,8 +31,10 @@ app.use(
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { message: 'Too many login attempts, please try again in 15 minutes' }
+  max: 20,
+  message: {
+    message: "Too many login attempts, please try again in 15 minutes",
+  },
 });
 
 app.use(express.json());
@@ -48,10 +52,9 @@ app.get("/", (req, res) => {
   res.json({ message: "NovaPay API running" });
 });
 
-
 const start = async () => {
   await connectDB();
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ force: false });
   await seedAnalyst();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

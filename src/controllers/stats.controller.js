@@ -10,20 +10,19 @@ const getDashboardStats = async (req, res) => {
     const totalTransactions = await Transaction.count();
 
     const transactionsToday = await Transaction.count({
-      where: {
-        timestamp: { [Op.gte]: today }
-      }
+      where: { timestamp: { [Op.gte]: today } },
     });
 
     const pendingCases = await Transaction.count({
-      where: { status: 'pending', decision: 'review' }
+      where: { status: "pending" },
     });
 
     const blockedTransactions = await Transaction.count({
-      where: { decision: 'block' }
+      where: { decision: "block" },
     });
 
-    const detectionRate = totalTransactions > 0
+    const detectionRate =
+      totalTransactions > 0
         ? ((blockedTransactions / totalTransactions) * 100).toFixed(1)
         : 0;
 
@@ -34,7 +33,6 @@ const getDashboardStats = async (req, res) => {
       blocked_transactions: blockedTransactions,
       detection_rate: `${detectionRate}%`,
     });
-
   } catch (error) {
     console.error("getDashboardStats error:", error.message);
     res.status(500).json({ message: "Failed to get stats" });
@@ -45,9 +43,42 @@ const getDSStats = async (req, res) => {
   try {
     const data = await getStats();
     res.json(data);
-  } catch (error) {
-    console.error("getDSStats error:", error.message);
-    res.status(500).json({ message: "Failed to get DS stats" });
+  } catch (dsError) {
+    console.error("getDSStats error — fallback a Supabase:", dsError.message);
+
+    // Fallback — calcular stats desde Supabase
+    try {
+      const totalTransactions = await Transaction.count();
+
+      const fraudTransactions = await Transaction.count({
+        where: { risk_level: "high" },
+      });
+
+      const blockedTransactions = await Transaction.count({
+        where: { decision: "block" },
+      });
+
+      const pendingCases = await Transaction.count({
+        where: { status: "pending" },
+      });
+
+      const detectionRate =
+        totalTransactions > 0
+          ? ((fraudTransactions / totalTransactions) * 100).toFixed(1)
+          : 0;
+
+      res.json({
+        total_transactions: totalTransactions,
+        fraud_detected: fraudTransactions,
+        blocked: blockedTransactions,
+        pending: pendingCases,
+        detection_rate: `${detectionRate}%`,
+        source: "cached",
+      });
+    } catch (fallbackError) {
+      console.error("getDSStats fallback error:", fallbackError.message);
+      res.status(500).json({ message: "Failed to get DS stats" });
+    }
   }
 };
 
@@ -63,7 +94,6 @@ const getHistoryStats = async (req, res) => {
 
     const manualFlags = await AnalystDecision.count();
 
-    // Avg resolve time: minutos entre transaction.timestamp y decision.createdAt
     const decisions = await AnalystDecision.findAll({
       include: [
         {
