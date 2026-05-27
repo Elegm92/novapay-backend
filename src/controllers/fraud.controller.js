@@ -4,11 +4,11 @@ import {
   sendFeedback,
   previewThreshold,
 } from "../services/fraud.service.js";
+import dsApi from "../utils/dsApi.js";
 
 const decide = async (req, res) => {
   try {
     const transaction = req.body;
-
     if (!transaction.amount || !transaction.nameOrig || !transaction.step) {
       return res.json({
         decision: transaction.decision || "review",
@@ -18,24 +18,7 @@ const decide = async (req, res) => {
         source: "cached",
       });
     }
-
-    // Limpiar nulls antes de mandar a DS
-    const cleanTransaction = {
-      transaction_id: transaction.transaction_id,
-      step: transaction.step ?? 1,
-      type: transaction.type || "TRANSFER",
-      amount: transaction.amount ?? 0,
-      nameOrig: transaction.nameOrig || "unknown",
-      oldbalanceOrg: transaction.oldbalanceOrg ?? 0,
-      newbalanceOrig: transaction.newbalanceOrig ?? 0,
-      nameDest: transaction.nameDest || "unknown",
-      oldbalanceDest: transaction.oldbalanceDest ?? 0,
-      newbalanceDest: transaction.newbalanceDest ?? 0,
-      merchant_category: transaction.merchant_category || "unknown",
-      ip_country: transaction.ip_country || "unknown",
-    };
-
-    const data = await decideTransaction(cleanTransaction);
+    const data = await decideTransaction(transaction);
     res.json(data);
   } catch (error) {
     console.error("decide error:", error.message);
@@ -53,7 +36,6 @@ const decide = async (req, res) => {
 const challenge = async (req, res) => {
   try {
     const transaction = req.body;
-
     if (!transaction.fraud_probability && !transaction.risk_level) {
       return res.json({
         recommended_action: "MANUAL_REVIEW",
@@ -67,7 +49,6 @@ const challenge = async (req, res) => {
         alternative_options: [],
       });
     }
-
     const data = await getChallengeRecommendation(transaction);
     res.json(data);
   } catch (error) {
@@ -115,4 +96,15 @@ const preview = async (req, res) => {
   }
 };
 
-export { decide, challenge, feedback, preview };
+const explain = async (req, res) => {
+  try {
+    const { transaction_id } = req.params;
+    const response = await dsApi.get(`/fraud/explain/${transaction_id}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("explain error:", error.message);
+    res.json({ narrative: "Análisis de IA no disponible temporalmente." });
+  }
+};
+
+export { decide, challenge, feedback, preview, explain };
