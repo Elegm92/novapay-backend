@@ -46,7 +46,6 @@ const getDSStats = async (req, res) => {
   } catch (dsError) {
     console.error("getDSStats error — fallback a Supabase:", dsError.message);
 
-    // Fallback — calcular stats desde Supabase
     try {
       const totalTransactions = await Transaction.count();
 
@@ -94,32 +93,10 @@ const getHistoryStats = async (req, res) => {
 
     const manualFlags = await AnalystDecision.count();
 
-    const decisions = await AnalystDecision.findAll({
-      include: [
-        {
-          model: Transaction,
-          as: "Transaction",
-          attributes: ["timestamp"],
-          required: true,
-        },
-      ],
-      attributes: ["createdAt"],
-    });
-
-    let avgResolveTime = null;
-    if (decisions.length) {
-      const totalMinutes = decisions.reduce((acc, d) => {
-        const diff = new Date(d.createdAt) - new Date(d.Transaction.timestamp);
-        return acc + diff / 1000 / 60;
-      }, 0);
-      avgResolveTime = Math.round(totalMinutes / decisions.length);
-    }
-
     res.json({
       total_approved: totalApproved,
       total_blocked: totalBlocked,
       manual_flags: manualFlags,
-      avg_resolve_time_minutes: avgResolveTime,
     });
   } catch (error) {
     console.error("getHistoryStats error:", error.message);
