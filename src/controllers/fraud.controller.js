@@ -4,11 +4,11 @@ import {
   sendFeedback,
   previewThreshold,
 } from "../services/fraud.service.js";
+import dsApi from "../utils/dsApi.js";
 
 const decide = async (req, res) => {
   try {
     const transaction = req.body;
-
     if (!transaction.amount || !transaction.nameOrig || !transaction.step) {
       return res.json({
         decision: transaction.decision || "review",
@@ -18,12 +18,10 @@ const decide = async (req, res) => {
         source: "cached",
       });
     }
-
     const data = await decideTransaction(transaction);
     res.json(data);
   } catch (error) {
     console.error("decide error:", error.message);
-    // Si DS rechaza (422) o falla (500) usar fallback
     const transaction = req.body;
     return res.json({
       decision: transaction.decision || "review",
@@ -38,30 +36,31 @@ const decide = async (req, res) => {
 const challenge = async (req, res) => {
   try {
     const transaction = req.body;
-
     if (!transaction.fraud_probability && !transaction.risk_level) {
       return res.json({
         recommended_action: "MANUAL_REVIEW",
-        reasoning: "Datos insuficientes para generar una recomendación automática. Revisión manual requerida.",
+        reasoning:
+          "Datos insuficientes para generar una recomendación automática. Revisión manual requerida.",
         primary_option: {
           friction: "medium",
-          user_message: "Hemos pausado esta operación. Nuestro equipo la revisará en breve.",
+          user_message:
+            "Hemos pausado esta operación. Nuestro equipo la revisará en breve.",
         },
         alternative_options: [],
       });
     }
-
     const data = await getChallengeRecommendation(transaction);
     res.json(data);
   } catch (error) {
     console.error("challenge error:", error.message);
-    // Fallback si DS falla
     return res.json({
       recommended_action: "MANUAL_REVIEW",
-      reasoning: "Servicio de análisis no disponible temporalmente. Revisión manual requerida.",
+      reasoning:
+        "Servicio de análisis no disponible temporalmente. Revisión manual requerida.",
       primary_option: {
         friction: "medium",
-        user_message: "Hemos pausado esta operación. Nuestro equipo la revisará en breve.",
+        user_message:
+          "Hemos pausado esta operación. Nuestro equipo la revisará en breve.",
       },
       alternative_options: [],
     });
@@ -92,9 +91,20 @@ const preview = async (req, res) => {
       false_positives: 0,
       money_saved: 0,
       recommendation: "Servicio de preview no disponible temporalmente.",
-      comparison: null
+      comparison: null,
     });
   }
 };
 
-export { decide, challenge, feedback, preview };
+const explain = async (req, res) => {
+  try {
+    const { transaction_id } = req.params;
+    const response = await dsApi.get(`/fraud/explain/${transaction_id}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("explain error:", error.message);
+    res.json({ narrative: "Análisis de IA no disponible temporalmente." });
+  }
+};
+
+export { decide, challenge, feedback, preview, explain };
