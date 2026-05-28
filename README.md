@@ -1,11 +1,11 @@
-# 🛡️ NovaPay — Backend API
+# NovaPay — Backend API
  
 > API REST del sistema de detección y gestión de fraude financiero **Sentinel NovaPay**.  
 > Construida con **Node.js + Express + Sequelize** y desplegada en **Render**.
  
 ---
  
-## 🌐 Despliegue
+## Despliegue
  
 | Entorno | URL |
 |--------|-----|
@@ -14,7 +14,7 @@
  
 ---
  
-## 📋 Descripción general
+## Descripción general
  
 El backend actúa como intermediario entre el frontend y el servicio de Data Science (DS). Sus responsabilidades son:
  
@@ -25,7 +25,7 @@ El backend actúa como intermediario entre el frontend y el servicio de Data Sci
 - Proveer fallback propio desde Supabase cuando el servicio DS no está disponible.
 ---
  
-## 🗂️ Estructura del proyecto
+## Estructura del proyecto
  
 ```
 back/
@@ -67,12 +67,12 @@ back/
  
 ---
  
-## 🔌 Endpoints de la API
+## Endpoints de la API
  
 > Base URL: `https://novapay-backend-3p3z.onrender.com`  
 > Todas las rutas protegidas requieren el header `Authorization: Bearer <token>` o la cookie `accessToken`.
  
-### 🔑 Auth — `/api/auth`
+### Auth — `/api/auth`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -81,11 +81,11 @@ back/
 | `POST` | `/api/auth/logout` | ✅ | Cierra sesión y elimina la cookie |
 | `PATCH` | `/api/auth/profile` | ✅ | Actualiza el estilo de avatar del analista |
  
-> ⚠️ El endpoint `/api/auth/login` tiene rate limiting: máximo **20 peticiones cada 15 minutos**.
+> El endpoint `/api/auth/login` tiene rate limiting: máximo **20 peticiones cada 15 minutos**.
  
 ---
  
-### 💳 Transacciones — `/api/transactions`
+### Transacciones — `/api/transactions`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -93,7 +93,7 @@ back/
  
 ---
  
-### ⚖️ Decisiones — `/api/decisions`
+### Decisiones — `/api/decisions`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -102,7 +102,7 @@ back/
  
 ---
  
-### 🤖 Fraude (Data Science) — `/api/fraud`
+### Fraude (Data Science) — `/api/fraud`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -114,7 +114,7 @@ back/
  
 ---
  
-### 📊 Estadísticas — `/api/stats`
+### Estadísticas — `/api/stats`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -124,7 +124,7 @@ back/
  
 ---
  
-### 👤 Clientes — `/api/clients`
+### Clientes — `/api/clients`
  
 | Método | Ruta | Protegida | Descripción |
 |--------|------|-----------|-------------|
@@ -132,7 +132,7 @@ back/
  
 ---
  
-## 🗄️ Modelos de base de datos
+## Modelos de base de datos
  
 ### `Analyst`
 | Campo | Tipo | Descripción |
@@ -168,7 +168,7 @@ back/
  
 ---
  
-## 🔐 Seguridad
+## Seguridad
  
 - **Helmet** para cabeceras HTTP seguras.
 - **CORS** restringido al origen del frontend.
@@ -177,7 +177,7 @@ back/
 - **bcrypt** para hash de contraseñas.
 ---
  
-## 🚀 Instalación y ejecución local
+## Instalación y ejecución local
  
 ### Requisitos previos
  
@@ -227,7 +227,7 @@ Al arrancar, la aplicación:
    - **Contraseña:** `1234`
 ---
  
-## 🧰 Stack tecnológico
+## Stack tecnológico
  
 | Paquete | Versión | Uso |
 |---------|---------|-----|
@@ -245,7 +245,7 @@ Al arrancar, la aplicación:
  
 ---
  
-## ☁️ Despliegue en Render
+## Despliegue en Render
  
 El backend está desplegado como **Web Service** en [Render](https://render.com):
  
@@ -253,10 +253,13 @@ El backend está desplegado como **Web Service** en [Render](https://render.com)
 - **Start command:** `npm start`
 - **Variables de entorno:** configuradas en el panel de Render
 - **Auto-deploy:** activado desde la rama `main` del repositorio
-> ⚠️ Render suspende el servicio por inactividad en el plan gratuito. La primera petición puede tardar ~30 segundos en "despertar" el servidor.
+>  Render suspende el servicio por inactividad en el plan gratuito. La primera petición puede tardar ~30 segundos en "despertar" el servidor.
  
 ---
- 
-## 📁 Repositorio
+## hecho por
+- Elena González 
+- Karina Paola Rojas
+
+## Repositorio
  
 [https://github.com/Elegm92/novapay-backend](https://github.com/Elegm92/novapay-backend)
