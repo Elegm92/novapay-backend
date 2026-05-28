@@ -73,7 +73,13 @@ const getQueue = async (req, res) => {
         }),
       );
 
-      return res.json({ ...dsData, queue: enrichedQueue });
+      const filteredQueue = enrichedQueue.filter((tx) => {
+        if (type && tx.type?.toUpperCase() !== type.toUpperCase()) return false;
+        if (risk_level && tx.risk_level !== risk_level) return false;
+        return true;
+      });
+
+      return res.json({ ...dsData, queue: filteredQueue });
     }
 
     const where = { status: "pending" };
