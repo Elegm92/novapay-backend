@@ -259,7 +259,3 @@ El backend está desplegado como **Web Service** en [Render](https://render.com)
 ## Hecho por
 - Elena González 
 - Karina Paola Rojas
-
-## Repositorio
- 
-[https://github.com/Elegm92/novapay-backend](https://github.com/Elegm92/novapay-backend)
