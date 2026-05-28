@@ -256,7 +256,7 @@ El backend está desplegado como **Web Service** en [Render](https://render.com)
 >  Render suspende el servicio por inactividad en el plan gratuito. La primera petición puede tardar ~30 segundos en "despertar" el servidor.
  
 ---
-## hecho por
+## Hecho por
 - Elena González 
 - Karina Paola Rojas
 
